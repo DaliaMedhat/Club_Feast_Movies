@@ -23,13 +23,13 @@ const HomeScreen = () => {
 
   async function getGenre(id) {
       try {
+        setisLoading(true);
         const GenreAPI = "https://api.themoviedb.org/3/movie/"+id+"?api_key=4f298a53e552283bee957836a529baec";
         // const GenreAPI =
         // 'https://api.themoviedb.org/3/genre/movie/list?api_key=4f298a53e552283bee957836a529baec';
         const genreResponse = await fetch(GenreAPI);
         const genreJson = await genreResponse.json();
         setGenresData(genreJson.genres);
-        setisLoading(true);
       //   const genresForMovie = genresData.map((item) =>
       //   setallGenresData([...allGenresData,item.name])
       // );
@@ -46,6 +46,7 @@ const HomeScreen = () => {
   };
 
   async function getList (type) {
+    setisLoading(true);
     var MoviesAPI = 'https://api.themoviedb.org/3/movie/upcoming?api_key=4f298a53e552283bee957836a529baec';
     try {
       if (type === "upcoming") {
@@ -62,7 +63,7 @@ const HomeScreen = () => {
       const response = await fetch(MoviesAPI);
       const json = await response.json();
       setData(json.results);
-      setisLoading(true);
+      
       // const genresList = data.map((item) =>
       //   getGenre(item.id)
       // );
@@ -79,7 +80,11 @@ const HomeScreen = () => {
 
 
   return (
+
     <SafeAreaView style={styles.container}>
+        
+    
+    {/* {!isLoading &&  */}
       <View style={styles.buttonsContainer}>
         <TouchableOpacity
           style={styles.button}
@@ -98,13 +103,14 @@ const HomeScreen = () => {
           onPress={(() => getList("top_rated"))}>
           <Text style={styles.buttonText}>Top Rated</Text>
         </TouchableOpacity>
+      
       </View>
 
-      {/* <View style={styles.moviesContainer}> */}
+      { isLoading && <Text style= {{ fontSize: 18, alignSelf:'center'}}> Loading ... </Text> }
+      {!isLoading && 
         <View >
         <ScrollView >
 
-          {isLoading && <Text style={styles.button}> Loading ...</Text>}
           {data.map(item => {
             
             return (
@@ -165,6 +171,7 @@ const HomeScreen = () => {
          
           {/* </FlatList> */}
       </View>
+      }
     </SafeAreaView>
   );
 };
