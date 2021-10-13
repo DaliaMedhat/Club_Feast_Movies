@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 
 const HomeScreen = () => {
-  // const [listSelected, setList] = useState('upcoming');
+  const [isLoading, setisLoading] = useState(false);
   const [data, setData] = useState([]);
   const [genresData, setGenresData] = useState([]);
   const [allGenresData, setallGenresData] = useState([]);
@@ -29,15 +29,19 @@ const HomeScreen = () => {
         const genreResponse = await fetch(GenreAPI);
         const genreJson = await genreResponse.json();
         setGenresData(genreJson.genres);
+        setisLoading(true);
       //   const genresForMovie = genresData.map((item) =>
       //   setallGenresData([...allGenresData,item.name])
       // );
-      console.log(id);
-      console.log(allGenresData);
-      console.log(genreJson.genres[0].name);
+      // console.log(id);
+      // console.log(allGenresData);
+      // console.log(genreJson.genres[0].name);
       }
       catch(error){
         window.alert("errorGenre")
+      }
+      finally{
+        setisLoading(false);
       }
   };
 
@@ -58,6 +62,7 @@ const HomeScreen = () => {
       const response = await fetch(MoviesAPI);
       const json = await response.json();
       setData(json.results);
+      setisLoading(true);
       // const genresList = data.map((item) =>
       //   getGenre(item.id)
       // );
@@ -66,6 +71,9 @@ const HomeScreen = () => {
     } 
     catch (error) {
       window.alert('Error');
+    }
+    finally{
+      setisLoading(false);
     }
   };
 
@@ -95,6 +103,8 @@ const HomeScreen = () => {
       {/* <View style={styles.moviesContainer}> */}
         <View >
         <ScrollView >
+
+          {isLoading && <Text style={styles.button}> Loading ...</Text>}
           {data.map(item => {
             
             return (
