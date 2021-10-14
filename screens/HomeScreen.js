@@ -10,45 +10,41 @@ import {
   StyleSheet,
   Text,
   View,
+  ActivityIndicator
 } from 'react-native';
+import MovieComponent from '../MovieComponent';
 
 const HomeScreen = () => {
   const [isLoading, setisLoading] = useState(false);
   const [data, setData] = useState([]);
   const [genresData, setGenresData] = useState([]);
-  const [allGenresData, setallGenresData] = useState([]);
-  const [mounted, setMounted] = useState('')
  
   const navigation = useNavigation();
 
-  async function getGenre(id) {
-      try {
-        setisLoading(true);
-        const GenreAPI = "https://api.themoviedb.org/3/movie/"+id+"?api_key=4f298a53e552283bee957836a529baec";
-        // const GenreAPI =
-        // 'https://api.themoviedb.org/3/genre/movie/list?api_key=4f298a53e552283bee957836a529baec';
-        const genreResponse = await fetch(GenreAPI);
-        const genreJson = await genreResponse.json();
-        setGenresData(genreJson.genres);
-      //   const genresForMovie = genresData.map((item) =>
-      //   setallGenresData([...allGenresData,item.name])
-      // );
-      // console.log(id);
-      // console.log(allGenresData);
-      // console.log(genreJson.genres[0].name);
-      }
-      catch(error){
-        window.alert("errorGenre")
-      }
-      finally{
-        setisLoading(false);
-      }
+  async function getMovieGenre (MovieId) {
+    
+    var MovieDetailsAPI = 'https://api.themoviedb.org/3/movie/'+ MovieId +'?api_key=4f298a53e552283bee957836a529baec';
+    try {
+      // setisLoading(true);
+      const response = await fetch(MovieDetailsAPI);
+      const json = await response.json();
+      setGenresData(json.genres);
+
+      console.log(json.genres)
+    } 
+    catch (error) {
+      window.alert('Error Genre');
+      // setisLoading(false);
+    }
+    finally{
+      // setisLoading(false);
+    }
   };
 
   async function getList (type) {
-    setisLoading(true);
     var MoviesAPI = 'https://api.themoviedb.org/3/movie/upcoming?api_key=4f298a53e552283bee957836a529baec';
     try {
+      setisLoading(true);
       if (type === "upcoming") {
          MoviesAPI =
           'https://api.themoviedb.org/3/movie/upcoming?api_key=4f298a53e552283bee957836a529baec';
@@ -63,28 +59,32 @@ const HomeScreen = () => {
       const response = await fetch(MoviesAPI);
       const json = await response.json();
       setData(json.results);
-      
-      // const genresList = data.map((item) =>
-      //   getGenre(item.id)
-      // );
-      // getGenre(580489);
-      
     } 
     catch (error) {
-      window.alert('Error');
+      window.alert('Error List');
+      setisLoading(false);
     }
     finally{
       setisLoading(false);
     }
   };
 
+  useEffect(() => {
+    
+    {data.map(item => {
+      // {getMovieGenre(580489)}
+      getMovieGenre(item.id);
+           
+      })}
+
+    return () => {
+      setGenresData([]);
+    };
+      }, []);
 
   return (
-
     <SafeAreaView style={styles.container}>
         
-    
-    {/* {!isLoading &&  */}
       <View style={styles.buttonsContainer}>
         <TouchableOpacity
           style={styles.button}
@@ -106,70 +106,42 @@ const HomeScreen = () => {
       
       </View>
 
-      { isLoading && <Text style= {{ fontSize: 18, alignSelf:'center'}}> Loading ... </Text> }
+      { isLoading &&
+      <View style={{flex:1,justifyContent:'center',alignContent:'center'}}>
+      <ActivityIndicator size="large" /> 
+      </View>
+      }
+
       {!isLoading && 
         <View >
         <ScrollView >
-
           {data.map(item => {
-            
             return (
-             
-                <TouchableOpacity   style = {styles.moviesContainer}
-                                    key={item.id} underlayColor='#dddddd'
-                                    onPress={() => navigation.navigate("Movie Details", item.id) }
-                                    >
-                                    
-                  <View style={styles.moviePosters}>
-                    <Image
-                      style={{ width: '70%', height: '70%'}}
-                      source={{uri: "https://image.tmdb.org/t/p/w500"+ item.poster_path,}}/>
-
-                        <View style={styles.textContainer}>
-                            <Text style={styles.buttonText}> {item.original_title}</Text>   
-                            <Text style={styles.detailsText}> Release Date: {item.release_date}</Text>
-                            <Text style={styles.voteAverageStyle}> Rating: {item.vote_average}</Text>
-                        </View>
-                    </View>
-
-                {/* {genresData.map(genre =>{
-                  (getGenre(item.id)),
-                  
-                  <Text style={styles.buttonText}>{genre.name}</Text>
-                })
-              } */}
-
-              </TouchableOpacity>
+              <TouchableOpacity   
+              style = {styles.moviesContainer}
+              key={item.id} underlayColor='#dddddd'
+              onPress={() => navigation.navigate("Movie Details", item.id) }
+              >
+                <View>
+                  <MovieComponent 
+                    poster_path= {"https://image.tmdb.org/t/p/w500"+item.poster_path}
+                    original_title = {item.original_title}
+                    release_date = {item.release_date}
+                    vote_average = {item.vote_average}
+                    // genre = {genre === '' && 
+                    // genresData.map(x =>{
+                    //   return(
+                    //     <Text style={styles.buttonText}>{x.name}</Text>
+                    //   );
+                    //  })
+                    // }
+                    />               
+                </View>
+                </TouchableOpacity>
             );
           })}
              
         </ScrollView> 
-
-
-        
-      {/* <ScrollView>
-        <FlatList
-          data={data}
-          nestedScrollEnabled
-          renderItem={({item}) =>
-          (
-            <View> 
-          <Text style={styles.buttonText}>{item.original_title}</Text>
-          <FlatList
-          data={genresData}
-          nestedScrollEnabled
-          renderItem={({genre}) => (
-            getGenre(item.id),
-            <Text style={styles.buttonText}>{genre.name}</Text>
-          )}
-          keyExtractor={item => item.id}
-          /> 
-          </View>
-        )}
-          keyExtractor={item => item.id}
-        />
-         
-          {/* </FlatList> */}
       </View>
       }
     </SafeAreaView>
@@ -185,7 +157,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-evenly',
     alignItems: 'flex-start',
-    marginTop: '10%',
+    marginTop: '3%',
+    marginBottom: '3%',
   },
   button: {
     width: '30%',
@@ -209,20 +182,16 @@ const styles = StyleSheet.create({
   voteAverageStyle:{
     alignSelf: 'flex-end',
     flexDirection: 'column'
-    // paddingTop: '20%'
   },
   moviesContainer: {
     display: 'flex',
     flex:1,
     flexWrap: 'wrap',
-    // flexGrow:1,
     flexDirection: 'column',
-    justifyContent: "space-evenly",
     width: '70%',
     height: '100%',
-    // paddingTop: '20%',
+    padding: '0.5%'
   },
-
   moviePosters: {
     // paddingTop: '40%',
     flexDirection: 'row',
@@ -232,14 +201,26 @@ const styles = StyleSheet.create({
     paddingBottom: '62%',
     
   },
+  genreLayout:
+  {
+    margin: '3%',
+    flexDirection: 'row',
+  },
+  genreTextStyle:{
+    fontWeight: 'bold',
+    fontFamily: 'Century Gothic',
+    borderWidth: 2,
+    borderRadius: 10,
+    color: 'black',
+    backgroundColor: '#D5D5D5',
+    marginRight: 3,
+  },
   textContainer:{
-    width: '100%',
-    height: '100%',
-    flexWrap: 'wrap',
     paddingLeft: '7%',
-    flexDirection: 'column',
+    flexDirection: 'row',
     paddingTop: '7%',
     justifyContent: 'flex-start',
+    flexWrap: 'wrap',
 
   },
 });

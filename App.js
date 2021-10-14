@@ -11,11 +11,11 @@ export default function App() {
   return(
     <NavigationContainer>
       <Stack.Navigator 
-    // screenOptions={{ headerShown: false }}
+      // screenOptions={{ headerShown: false }}
     >
       <Stack.Screen
           name="Movies"
-          options={{header: () => null}}
+          // options={{header: () => null}}
           component={HomeScreen}
         />
       <Stack.Screen

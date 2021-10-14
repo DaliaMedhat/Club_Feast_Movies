@@ -9,6 +9,8 @@ import {
   StyleSheet,
   Text,
   View,
+  ActivityIndicator,
+  TouchableWithoutFeedback
 } from 'react-native';
 
 const MovieDetailsScreen = ({route,navigation}) =>{
@@ -76,7 +78,11 @@ const MovieDetailsScreen = ({route,navigation}) =>{
               <Text style={styles.backButton}> Back</Text> 
           </TouchableOpacity>
 
-          { isLoading && <Text style= {{ fontSize: 18, alignSelf:'center'}}> Loading ... </Text> }
+          { isLoading &&
+            <View style={{flex:1,justifyContent:'center',alignContent:'center'}}>
+            <ActivityIndicator size="large" /> 
+            </View>
+          }
           
           {!isLoading&&
           
@@ -117,14 +123,18 @@ const MovieDetailsScreen = ({route,navigation}) =>{
                     <ScrollView  horizontal={true}>
                         {creditsData.map( item => {
                           return (
-                            <TouchableOpacity   
-                            key={item.id}  
-                            underlayColor='#dddddd'>
-                                 <Image
+                                (<TouchableWithoutFeedback   
+                                key={item.id}  
+                                underlayColor='#dddddd'>
+                                <View>
+                                <Image
                                 style={styles.creditsImageStyle}
-                                source={{uri: "https://image.tmdb.org/t/p/w500"+ item.profile_path}}/>
+                                source={item.profile_path!==null?{uri: "https://image.tmdb.org/t/p/w500"+ item.profile_path}
+                                :{uri: "https://eitrawmaterials.eu/wp-content/uploads/2016/09/person-icon.png"}}/>
+
                                 <Text style={styles.creditsTextStyle}> {item.name}  </Text>
-                            </TouchableOpacity>
+                                </View>
+                                </TouchableWithoutFeedback>)
                           );}
                           )}
                           </ScrollView>
@@ -180,28 +190,26 @@ const styles = StyleSheet.create({
     backgroundColor: '#D5D5D5',
     marginRight: 3,
   },
- 
   creditsLayout:{
     flexGrow:1,
-  
-    flexDirection: 'column',
+    flexDirection: 'row',
     justifyContent: 'space-evenly',
     paddingLeft: '2%',
     paddingright: '2%',
   },
-  
   creditsImageStyle: {
       height: Dimensions.get('window').height/8,
       width: 362 * Dimensions.get('window').width/1541,
       alignSelf: 'center',
       borderRadius: 20,
-      borderColor: 'white'
+      flexDirection: 'row',
+      justifyContent: 'space-evenly'
   },
-    
   creditsTextStyle: {
       alignSelf: 'center',
       fontWeight: 'bold',
       fontFamily: 'Century Gothic',
+      flexDirection: 'row',
       justifyContent: 'space-evenly'
   },
   backButton: {
