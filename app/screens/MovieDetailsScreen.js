@@ -1,5 +1,7 @@
 import React, {useState, useEffect} from 'react';
 import { Dimensions } from 'react-native';
+import app from '../config/app';
+import style from '../config/style';
 
 import {
   SafeAreaView,
@@ -12,6 +14,7 @@ import {
   ActivityIndicator,
   TouchableWithoutFeedback
 } from 'react-native';
+import GenreComponent from '../components/GenreComponent';
 
 const MovieDetailsScreen = ({route,navigation}) =>{
   const [data, setData] = useState([]);
@@ -25,7 +28,6 @@ const MovieDetailsScreen = ({route,navigation}) =>{
 
   useEffect(() => {
     getMovieDetails(JSON.stringify(itemId));
-    getMovieCredits(JSON.stringify(itemId));
     
     return () => {
       setData({});
@@ -37,12 +39,13 @@ const MovieDetailsScreen = ({route,navigation}) =>{
 
   async function getMovieDetails (MovieId) {
     
-    var MovieDetailsAPI = 'https://api.themoviedb.org/3/movie/'+ MovieId +'?api_key=4f298a53e552283bee957836a529baec';
+    var MovieDetailsAPI = app.movieDetails + MovieId + app.APIkeyCreditsAppended;
     try {
       setisLoading(true);
       const response = await fetch(MovieDetailsAPI);
       const json = await response.json();
       setData(json);
+      setCreditsData(json.credits.cast);
       setGenreData(json.genres);
     } 
     catch (error) {
@@ -52,69 +55,32 @@ const MovieDetailsScreen = ({route,navigation}) =>{
       setisLoading(false);
     }
   };
-
-  async function getMovieCredits (MovieId) {
-    
-    var MovieCreditsAPI = 'https://api.themoviedb.org/3/movie/'+ MovieId +'/credits?api_key=4f298a53e552283bee957836a529baec';
-    try {
-      setisLoading(true);
-      const response = await fetch(MovieCreditsAPI);
-      const json = await response.json();
-      setCreditsData(json.cast);
-    } 
-    catch (error) {
-      window.alert('Error');
-    }
-    finally{
-      setisLoading(false);
-    }
-  };
-
+  
   return(
     <SafeAreaView style={styles.container}>
-          <TouchableOpacity 
-              key={data.id} underlayColor='#dddddd'
-              onPress={() => navigation.goBack()}> 
-              <Text style={styles.backButton}> Back</Text> 
-          </TouchableOpacity>
-
           { isLoading &&
-            <View style={{flex:1,justifyContent:'center',alignContent:'center'}}>
+            <View style={style.activityIndicator}>
             <ActivityIndicator size="large" /> 
             </View>
           }
           
           {!isLoading&&
           
-        <View style={{paddingTop:'10%'}}>
+        <View>
           <ScrollView>
           <Text style={styles.movieTitle}> {data.original_title} </Text>
-           
-          <Image
-             style={{ height: win.height/2,
-              width: 362 * ratio, alignSelf: 'center'}}
-              source={{uri: "https://image.tmdb.org/t/p/w500"+ data.poster_path,}}/>
 
+          <Image
+             style= {styles.moviePoster}
+             source={{uri: app.URIimage+ data.poster_path,}}/>
+
+                  <Text style={styles.ratingText}> {data.vote_average*10}% </Text>
                    <Text style={styles.title}>Overview</Text> 
                    <Text style={styles.normalInfo}> {data.overview} </Text>
                   
                   <Text style={styles.title}>Genres</Text> 
-                  <View  style= {styles.genreLayout}>
-
-                    <ScrollView  horizontal={true}>
-                        {genreData.map( item => {
-                          return (
-                            <TouchableOpacity   
-                            key={item.id}  
-                            underlayColor='#dddddd'>
-                                <Text style={styles.genreTextStyle}> {item.name}  </Text>
-                            </TouchableOpacity>
-                          );
-                        }
-                          )}
-                      </ScrollView>
-                  </View>
-
+                  <GenreComponent data = {genreData} 
+                  />
 
                   <Text style={styles.title}>Credits</Text> 
 
@@ -125,12 +91,12 @@ const MovieDetailsScreen = ({route,navigation}) =>{
                           return (
                                 (<TouchableWithoutFeedback   
                                 key={item.id}  
-                                underlayColor='#dddddd'>
+                                underlayColor={style.underlayColor}>
                                 <View>
                                 <Image
                                 style={styles.creditsImageStyle}
-                                source={item.profile_path!==null?{uri: "https://image.tmdb.org/t/p/w500"+ item.profile_path}
-                                :{uri: "https://eitrawmaterials.eu/wp-content/uploads/2016/09/person-icon.png"}}/>
+                                source={item.profile_path!==null?{uri: app.URIimage+ item.profile_path}
+                                :{uri: app.URInullCredits}}/>
 
                                 <Text style={styles.creditsTextStyle}> {item.name}  </Text>
                                 </View>
@@ -149,6 +115,11 @@ const styles = StyleSheet.create({
   container: {
     flex:1,
     padding: 5,
+  },
+  moviePoster:{
+    height:  Dimensions.get('window').height/2,
+    width: 362 *  Dimensions.get('window').width/541,
+    alignSelf: 'center',
   },
   movieTitle: {
     padding: '1%',
@@ -211,6 +182,14 @@ const styles = StyleSheet.create({
       fontFamily: 'Century Gothic',
       flexDirection: 'row',
       justifyContent: 'space-evenly'
+  },
+  ratingText:{
+    fontSize: 20,
+    color: 'green',
+    alignSelf: 'center',
+    padding: '3%',
+    fontWeight:'bold'
+
   },
   backButton: {
     position: 'absolute',

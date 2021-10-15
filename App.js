@@ -1,7 +1,6 @@
 import React from 'react';
-import HomeScreen from './screens/HomeScreen';
-import MovieDetailsScreen from './screens/MovieDetailsScreen';
-
+import HomeScreen from './app/screens/HomeScreen';
+import MovieDetailsScreen from './app/screens/MovieDetailsScreen';
 import { NavigationContainer} from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
@@ -10,35 +9,33 @@ export default function App() {
   const Stack = createNativeStackNavigator();
   return(
     <NavigationContainer>
-      <Stack.Navigator 
-      // screenOptions={{ headerShown: false }}
-    >
-      <Stack.Screen
-          name="Movies"
-          // options={{header: () => null}}
-          component={HomeScreen}
-        />
-      <Stack.Screen
-          name="Movie Details"
-          options={{header: () => null}}
-          component={MovieDetailsScreen}
-        />
-       
+      <Stack.Navigator>
+        <Stack.Screen
+            name="Movies"
+            component={HomeScreen}
+          />
+        <Stack.Screen
+            name="Movie Details"
+            component={MovieDetailsScreen}
+            options={{ headerStyleInterpolator: forFade }}
+          />
       </Stack.Navigator>
   </NavigationContainer>
   );
 }
+const forFade = ({ current, next }) => {
+  const opacity = Animated.add(
+    current.progress,
+    next ? next.progress : 0
+  ).interpolate({
+    inputRange: [0, 1, 2],
+    outputRange: [0, 1, 0],
+  });
 
-
-// export default function App() {
-//   return(
-//     <SafeAreaView style={{flex:1}}>
-
-//         <HomeScreen/>
-//     </SafeAreaView>
-//   );
-// }
-
-
-
-
+  return {
+    leftButtonStyle: { opacity },
+    rightButtonStyle: { opacity },
+    titleStyle: { opacity },
+    backgroundStyle: { opacity },
+  };
+};
