@@ -4,6 +4,6 @@ export default {
      {
     flex:1,
     justifyContent:'center',
-    alignContent:'center'
+    
     }
 };

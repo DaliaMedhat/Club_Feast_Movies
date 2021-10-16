@@ -16,15 +16,14 @@ import style from '../config/style';
 const GenreComponent = (props) => {
   return(
         <View  style= {styles.genreLayout}>
-
         <ScrollView  horizontal={true}>
             {props.data.map( item => {
               return (
-                <TouchableWithoutFeedback   
-                key={item.id}  
-                underlayColor={style.underlayColor}>
-                    <Text style={styles.genreTextStyle}> {item.name}  </Text>
-                </TouchableWithoutFeedback>
+                <View   
+                      style={styles.genresbox}
+                      underlayColor={style.underlayColor}>
+                      <Text style={styles.genreTextStyle}> {item.name}  </Text>
+                  </View>
               );
             }
               )}
@@ -35,17 +34,24 @@ const GenreComponent = (props) => {
 const styles = StyleSheet.create({
   genreLayout:
   {
-    margin: '3%',
+    flexGrow:1,
     flexDirection: 'row',
+    margin: '3%',
+    // flexWrap:'wrap',
+    // flexDirection: 'row',
+    // padding: '2%',
+  },
+  genresbox:{
+    // flexGrow:1,
+    backgroundColor: '#D5D5D5',
+    padding:'2%',
+    marginRight: 6,
+    borderRadius: 10,
   },
   genreTextStyle:{
     fontWeight: 'bold',
     fontFamily: 'Century Gothic',
-    borderWidth: 2,
-    borderRadius: 10,
     color: 'black',
-    backgroundColor: '#D5D5D5',
-    marginRight: 3,
   },
 });
 export default GenreComponent;

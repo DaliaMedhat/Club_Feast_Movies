@@ -11,60 +11,51 @@ import app from '../config/app';
 
 const MovieComponent = (props) => {
   return (
-    <View style={styles.moviePosters}>
+    <View style={styles.movieContainer}>
+      
       <Image
-        style={{ width: '70%', height: '33%'}}
+        style={styles.imageContainer}
         source={{uri: app.URIimage + props.poster_path,}}/>
 
           <View style={styles.textContainer}>
               <Text style={styles.buttonText}> {props.original_title}</Text>   
-              <Text style ={styles.buttonText}> {props.genre} </Text>
               <Text style={styles.detailsText}> {props.release_date}</Text>
+              <Text> {props.genre} </Text>
               <Text style={styles.ratingText}> {props.vote_average*10}%</Text>
           </View>
+          
       </View>
   )
 }
 
 const styles = StyleSheet.create({
 
-
-  moviePosters: {
+  movieContainer: {
+    display:'flex',
     flexDirection: 'row',
-    width:'70%',
-    height: '190%',
-    paddingBottom: '62%',
+    width:  '100%',
+    height: '100%' ,
+  },
+  imageContainer:{
+    height:'100%',
+    flex:1,
+    borderRadius: 10,
+    resizeMode:'contain'
   },
   textContainer:{
-    flexDirection: 'row',
+    flex:2,
+    paddingTop: '9%',
+    paddingBottom: '9%',
+    paddingLeft: '3%',
     flexWrap: 'wrap',
-    paddingLeft: '7%',
-    paddingTop: '7%',
-    justifyContent: 'flex-start',
-
   },
   buttonText: {
+    flexDirection: 'row',
+    width: '100%',
     fontSize: 16,
     fontWeight: 'bold',
     fontFamily: 'Century Gothic',
-    
-  },
-
-  genreLayout:
-  {
-    margin: '3%',
-    flexDirection: 'row',
-  },
-  genreTextStyle:{
-    width:"100%",
-    height:"5%",
-    fontWeight: 'bold',
-    fontFamily: 'Century Gothic',
-    borderWidth: 2,
-    borderRadius: 10,
-    color: 'black',
-    backgroundColor: '#D5D5D5',
-    marginRight: 3,
+    color: 'black'
   },
   detailsText: {
     paddingTop: '2%',
@@ -74,13 +65,13 @@ const styles = StyleSheet.create({
   },
 
   ratingText:{
-    fontSize: 16,
+    fontSize: 20,
     color: 'green',
     padding: '3%',
     fontWeight:'bold',
-    flexDirection: 'column',
-    alignSelf: 'flex-end',
-
+    position:'absolute',
+    bottom:'18%',
+    right: '10%'
   },
 });
 

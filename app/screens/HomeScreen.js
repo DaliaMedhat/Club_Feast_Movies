@@ -13,16 +13,21 @@ import {
   StyleSheet,
   Text,
   View,
-  ActivityIndicator
+  ActivityIndicator,
+  Dimensions,
+  Platform
 } from 'react-native';
 import GenreComponent from '../components/GenreComponent';
-
+// import {vw, vh, vmin, vmax} from 'react-native-viewport-units';
 const HomeScreen = () => {
+  
   const [isLoading, setisLoading] = useState(false);
   const [data, setData] = useState([]);
-  const [genresData, setGenresData] = useState([]);
+  const [filter, setfilter] = useState('upcoming');
   const navigation = useNavigation();
- 
+
+  // var  {vw, vh, vmin, vmax} = require('react-native-viewport-units');
+
   const getGenres = async () => {
     const url = app.getGenreAPI + app.APIkey;
     try {
@@ -38,6 +43,7 @@ const HomeScreen = () => {
     const api = `https://api.themoviedb.org/3/movie/${filter}` + app.APIkey;
     try {
       setisLoading(true);
+      setfilter(filter);
       const res = await fetch(api);
       const {results} = await res.json();
       const genres = await getGenres();
@@ -57,6 +63,7 @@ const HomeScreen = () => {
     }
     finally{
       setisLoading(false);
+      
   }
   };
 
@@ -64,7 +71,6 @@ const HomeScreen = () => {
     getMovieList('upcoming');
 
     return () => {
-      setGenresData([]);
     };
   }, []);
 
@@ -97,35 +103,35 @@ const HomeScreen = () => {
     <SafeAreaView style={styles.container}>
         
       <View style={styles.buttonsContainer}>
-        <TouchableOpacity
-          style={styles.button}
+         <TouchableOpacity
+          style={filter==='upcoming'? styles.pressedButton : styles.button}
           onPress={() => getMovieList('upcoming')}>
-          <Text style={styles.buttonText}>Upcoming</Text>
+          <Text style={filter==='upcoming'?styles.pressedText:{fontSize:16}}>Upcoming</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.button}
+          style={filter==='popular'? styles.pressedButton : styles.button}
           onPress={(() => getMovieList('popular'))}>
-          <Text style={styles.buttonText}>Popular</Text>
+          <Text style={filter==='popular'?styles.pressedText:{fontSize:16}}>Popular</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          style={styles.button}
+          style={filter==='top_rated'? styles.pressedButton : styles.button}
           onPress={(() => getMovieList("top_rated"))}>
-          <Text style={styles.buttonText}>Top Rated</Text>
+          <Text style={filter==='top_rated'?styles.pressedText:{fontSize:16}}>Top Rated</Text>
         </TouchableOpacity>
       
       </View>
 
       { isLoading &&
       <View style={style.activityIndicator}>
-      <ActivityIndicator size="large" /> 
+      <ActivityIndicator size="large"  /> 
       </View>
       }
 
       {!isLoading && 
         <View >
-        <ScrollView >
+        <ScrollView>
           {data.map(item => {
             return (
               <TouchableOpacity   
@@ -142,16 +148,19 @@ const HomeScreen = () => {
                     release_date = {item.release_date}
                     vote_average = {item.vote_average}
                     genre = {item.genres && item.genres.length > 0 &&
-                            <View style={styles.genreLayout}>
+                      <View style = {styles.movieGenres}>
                             {item.genres.map(x =>{
                               return(
-                                // <View style={styles.genreLayout}>
-                                  <TouchableWithoutFeedback    
-                                    key={x.id}  
-                                    underlayColor={style.underlayColor}>
+                                <View 
+                                key={x.id}  
+                                style={styles.genreLayout}>
+                                  {/* <TouchableWithoutFeedback  
+                                    key={x.id}    
+                                    underlayColor={style.underlayColor}> */}
                                     <Text style={styles.genreTextStyle}>{x.name}</Text>
-                                  </TouchableWithoutFeedback >
+                                  {/* </TouchableWithoutFeedback > */}
                                   
+                                  </View>
                                   );
                                 })
                               }
@@ -187,70 +196,51 @@ const styles = StyleSheet.create({
     padding: 10,
     margin: 5,
     borderRadius: 10,
-    backgroundColor: '#DDDDDD',
+    backgroundColor: style.underlayColor,
     alignItems: 'center',
   },
-  buttonText: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    fontFamily: 'Century Gothic',
-    
+  pressedButton: {
+    width: '30%',
+    padding: 10,
+    margin: 5,
+    color: 'white',
+    borderRadius: 10,
+    backgroundColor: 'green',
+    alignItems: 'center',
   },
-  detailsText: {
-    paddingTop: '2%',
-    fontSize: 14,
-    fontFamily: 'Century Gothic',
-  },
-  voteAverageStyle:{
-    alignSelf: 'flex-end',
-    flexDirection: 'column'
+  pressedText:{
+    color:'white',
+    fontSize:16,
+    fontFamily: Platform.OS==='android'?'Robto':'Helvetica',
   },
   moviesContainer: {
-    display: 'flex',
-    flex:1,
-    flexWrap: 'wrap',
-    flexDirection: 'column',
-    width: '70%',
-    height: '100%',
-    padding: '0.5%'
+    height: Dimensions.get('window').height/3,
+    width: '100%'
   },
-  moviePosters: {
-    flexDirection: 'row',
-    justifyContent: "flex-start",
-    width:'70%',
-    height: '190%',
-    paddingBottom: '62%',
-    
-  },
+
   genreLayout:
   {
-    // margin: '1%',
+    marginTop: 10,
+    marginBottom: 10
+  },
+  movieGenres:
+  {
+    width: 3*Dimensions.get('screen').width/5,
     flexDirection: 'row',
-    justifyContent: 'flex-start',
-    margin: 2
-    // flexWrap: 'wrap',
+    flexWrap: 'wrap',
   },
   genreTextStyle:{
-    fontWeight: 'bold',
-    fontFamily: 'Century Gothic',
-    borderWidth: 2,
-    borderRadius: 10,
-    color: 'black',
-    backgroundColor: '#D5D5D5',
-    justifyContent: 'flex-start',
-    flexWrap: 'wrap',
-    alignSelf: 'center',
-    marginRight: 2,
-    marginLeft: 2,
-  },
-  textContainer:{
-    paddingLeft: '7%',
     flexDirection: 'row',
-    paddingTop: '7%',
-    justifyContent: 'flex-start',
-    flexWrap: 'wrap',
-
+    fontWeight: 'bold',
+    fontFamily: Platform.OS==='android'?'Robto':'Helvetica',
+    // borderWidth: 2,
+    borderRadius: 15,
+    backgroundColor: '#D5D5D5',
+    marginRight: 6,
+    padding: '2.5%',
+    textAlign: 'center',
   },
+
   
 });
 

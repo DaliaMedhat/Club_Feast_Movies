@@ -6,13 +6,13 @@ import style from '../config/style';
 import {
   SafeAreaView,
   ScrollView,
-  TouchableOpacity,
   Image,
   StyleSheet,
   Text,
   View,
   ActivityIndicator,
-  TouchableWithoutFeedback
+  TouchableWithoutFeedback,
+  Platform
 } from 'react-native';
 import GenreComponent from '../components/GenreComponent';
 
@@ -68,19 +68,18 @@ const MovieDetailsScreen = ({route,navigation}) =>{
           
         <View>
           <ScrollView>
-          <Text style={styles.movieTitle}> {data.original_title} </Text>
-
           <Image
              style= {styles.moviePoster}
              source={{uri: app.URIimage+ data.poster_path,}}/>
+          <Text style={styles.movieTitle}> {data.original_title} </Text>
+
 
                   <Text style={styles.ratingText}> {data.vote_average*10}% </Text>
                    <Text style={styles.title}>Overview</Text> 
                    <Text style={styles.normalInfo}> {data.overview} </Text>
                   
                   <Text style={styles.title}>Genres</Text> 
-                  <GenreComponent data = {genreData} 
-                  />
+                  <GenreComponent data = {genreData}/>
 
                   <Text style={styles.title}>Credits</Text> 
 
@@ -91,7 +90,7 @@ const MovieDetailsScreen = ({route,navigation}) =>{
                           return (
                                 (<TouchableWithoutFeedback   
                                 key={item.id}  
-                                underlayColor={style.underlayColor}>
+                                >
                                 <View>
                                 <Image
                                 style={styles.creditsImageStyle}
@@ -119,47 +118,34 @@ const styles = StyleSheet.create({
   moviePoster:{
     height:  Dimensions.get('window').height/2,
     width: 362 *  Dimensions.get('window').width/541,
+    borderRadius: 10,
     alignSelf: 'center',
+    marginTop: '4%',
   },
   movieTitle: {
     padding: '1%',
     margin: '3%',
-    fontSize: 18,
+    fontSize: 22,
     fontWeight: 'bold',
-    fontFamily: 'Century Gothic',
+    fontFamily: Platform.OS==='android'?'Robto':'Helvetica',
     alignSelf:'center',
-    borderWidth: 3,
-    borderStyle: "solid",
-    borderColor: "#fff",
     borderRadius: 3,
-    backgroundColor: '#e0eeee'
+    color: 'black'
   },
   title: {
     marginTop: '3%',
     padding: '2%',
     fontSize: 18,
     fontWeight: 'bold',
-    fontFamily: 'Century Gothic',
-    backgroundColor: '#e0eeee'
+    fontFamily: Platform.OS==='android'?'Robto':'Helvetica',
+    color: 'black'
     // alignSelf:'left',
   },
   normalInfo: {
     fontSize: 16,
-    fontFamily: 'Century Gothic',
-  },
-  genreLayout:
-  {
-    margin: '3%',
-    flexDirection: 'row',
-  },
-  genreTextStyle:{
-    fontWeight: 'bold',
-    fontFamily: 'Century Gothic',
-    borderWidth: 2,
-    borderRadius: 10,
-    color: 'black',
-    backgroundColor: '#D5D5D5',
-    marginRight: 3,
+    padding: '2%',
+    fontFamily: Platform.OS==='android'?'Robto':'Helvetica',
+    textAlign: 'justify'
   },
   creditsLayout:{
     flexGrow:1,
@@ -172,14 +158,14 @@ const styles = StyleSheet.create({
       height: Dimensions.get('window').height/8,
       width: 362 * Dimensions.get('window').width/1541,
       alignSelf: 'center',
-      borderRadius: 20,
+      borderRadius: 50,
       flexDirection: 'row',
       justifyContent: 'space-evenly'
   },
   creditsTextStyle: {
       alignSelf: 'center',
       fontWeight: 'bold',
-      fontFamily: 'Century Gothic',
+      fontFamily: Platform.OS==='android'?'Robto':'Helvetica',
       flexDirection: 'row',
       justifyContent: 'space-evenly'
   },
@@ -187,24 +173,11 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: 'green',
     alignSelf: 'center',
-    padding: '3%',
+    padding: '2%',
     fontWeight:'bold'
 
   },
-  backButton: {
-    position: 'absolute',
-    padding: '2%',
-    borderWidth: 3,
-    borderStyle: "solid",
-    borderColor: "#fff",
-    borderRadius: 3,
-    fontWeight: 'bold',
-    backgroundColor: '#959595',
-    color: 'white',
-    fontSize: 16, 
-    fontStyle: 'italic',
-    fontFamily: 'Century Gothic'
-  },
+
 });
 
 export default MovieDetailsScreen;
