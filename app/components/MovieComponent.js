@@ -18,7 +18,7 @@ const MovieComponent = (props) => {
         source={{uri: app.URIimage + props.poster_path,}}/>
 
           <View style={styles.textContainer}>
-              <Text style={styles.buttonText}> {props.original_title}</Text>   
+              <Text style={styles.titleText}> {props.original_title}</Text>   
               <Text style={styles.detailsText}> {props.release_date}</Text>
               <Text> {props.genre} </Text>
               <Text style={styles.ratingText}> {props.vote_average*10}%</Text>
@@ -37,9 +37,10 @@ const styles = StyleSheet.create({
     height: '100%' ,
   },
   imageContainer:{
-    height:'100%',
     flex:1,
+    height:'100%',
     borderRadius: 10,
+    marginLeft:'5%',
     resizeMode:'contain'
   },
   textContainer:{
@@ -49,9 +50,9 @@ const styles = StyleSheet.create({
     paddingLeft: '3%',
     flexWrap: 'wrap',
   },
-  buttonText: {
+  titleText: {
     flexDirection: 'row',
-    width: '100%',
+    width: '95%',
     fontSize: 16,
     fontWeight: 'bold',
     fontFamily: 'Century Gothic',
@@ -63,7 +64,6 @@ const styles = StyleSheet.create({
     fontFamily: 'Century Gothic',
     justifyContent: 'flex-start',
   },
-
   ratingText:{
     fontSize: 20,
     color: 'green',

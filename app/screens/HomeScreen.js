@@ -140,7 +140,7 @@ const HomeScreen = () => {
               underlayColor={style.underlayColor}
               onPress={() => navigation.navigate("Movie Details", item.id) }
               >
-                <View>
+                <View >
                   
                   <MovieComponent 
                     poster_path= {app.URIimage+item.poster_path}
@@ -154,12 +154,7 @@ const HomeScreen = () => {
                                 <View 
                                 key={x.id}  
                                 style={styles.genreLayout}>
-                                  {/* <TouchableWithoutFeedback  
-                                    key={x.id}    
-                                    underlayColor={style.underlayColor}> */}
                                     <Text style={styles.genreTextStyle}>{x.name}</Text>
-                                  {/* </TouchableWithoutFeedback > */}
-                                  
                                   </View>
                                   );
                                 })
@@ -182,7 +177,8 @@ const HomeScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 10,
+    padding: 5,
+    paddingBottom:'20%'
   },
   buttonsContainer: {
     flexDirection: 'row',
@@ -215,30 +211,35 @@ const styles = StyleSheet.create({
   },
   moviesContainer: {
     height: Dimensions.get('window').height/3,
-    width: '100%'
-  },
-
-  genreLayout:
-  {
-    marginTop: 10,
-    marginBottom: 10
+    width: '100%',
+    marginBottom: '2%',
+    borderRadius: 15,
+    shadowColor: 'grey',
+    shadowOffset: {width: 1, height: 3},
+    shadowOpacity: 0.26,
+    elevation: 12,
+ 
   },
   movieGenres:
   {
-    width: 3*Dimensions.get('screen').width/5,
+    width: 3*Dimensions.get('screen').width/6,
     flexDirection: 'row',
     flexWrap: 'wrap',
   },
+  genreLayout:
+  {
+    height: '100%',
+    marginTop: 10,
+  },
   genreTextStyle:{
     flexDirection: 'row',
-    fontWeight: 'bold',
-    fontFamily: Platform.OS==='android'?'Robto':'Helvetica',
-    // borderWidth: 2,
+    marginRight: 6,
+    padding: '3%',
+    textAlign: 'center',
     borderRadius: 15,
     backgroundColor: '#D5D5D5',
-    marginRight: 6,
-    padding: '2.5%',
-    textAlign: 'center',
+    fontWeight: 'bold',
+    fontFamily: Platform.OS==='android'?'Robto':'Helvetica',
   },
 
   

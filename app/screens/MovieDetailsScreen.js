@@ -24,7 +24,6 @@ const MovieDetailsScreen = ({route,navigation}) =>{
 
   const  itemId = route.params;
   const win = Dimensions.get('window');
-  const ratio = win.width/541;
 
   useEffect(() => {
     getMovieDetails(JSON.stringify(itemId));
@@ -125,57 +124,58 @@ const styles = StyleSheet.create({
   movieTitle: {
     padding: '1%',
     margin: '3%',
+    alignSelf:'center',
+    borderRadius: 3,
+    color: 'black',
     fontSize: 22,
     fontWeight: 'bold',
     fontFamily: Platform.OS==='android'?'Robto':'Helvetica',
-    alignSelf:'center',
-    borderRadius: 3,
-    color: 'black'
   },
   title: {
     marginTop: '3%',
     padding: '2%',
+    color: 'black',
     fontSize: 18,
     fontWeight: 'bold',
     fontFamily: Platform.OS==='android'?'Robto':'Helvetica',
-    color: 'black'
-    // alignSelf:'left',
   },
   normalInfo: {
-    fontSize: 16,
     padding: '2%',
+    textAlign: 'justify',
+    fontSize: 16,
     fontFamily: Platform.OS==='android'?'Robto':'Helvetica',
-    textAlign: 'justify'
   },
   creditsLayout:{
     flexGrow:1,
     flexDirection: 'row',
-    justifyContent: 'space-evenly',
-    paddingLeft: '2%',
-    paddingright: '2%',
+    paddingLeft: '3%',
+    paddingright: '3%',
+    justifyContent: 'center'
   },
   creditsImageStyle: {
       height: Dimensions.get('window').height/8,
       width: 362 * Dimensions.get('window').width/1541,
-      alignSelf: 'center',
-      borderRadius: 50,
       flexDirection: 'row',
-      justifyContent: 'space-evenly'
+      borderRadius: 50,
+      justifyContent: 'space-evenly',
+      alignSelf: 'center',
+      marginLeft: '0.5%'
   },
   creditsTextStyle: {
-      alignSelf: 'center',
-      fontWeight: 'bold',
-      fontFamily: Platform.OS==='android'?'Robto':'Helvetica',
-      flexDirection: 'row',
-      justifyContent: 'space-evenly'
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    width:  362 * Dimensions.get('window').width/1441,
+    alignSelf: 'center',
+    fontWeight: 'bold',
+    fontFamily: Platform.OS==='android'?'Robto':'Helvetica',
   },
   ratingText:{
+    alignSelf: 'center',
     fontSize: 20,
     color: 'green',
-    alignSelf: 'center',
     padding: '2%',
-    fontWeight:'bold'
-
+    fontWeight:'bold',
+    fontFamily: Platform.OS==='android'?'Robto':'Helvetica',
   },
 
 });
